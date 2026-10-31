@@ -1,0 +1,9 @@
+{
+  "/auth/login/page": "app/auth/login/page.js",
+  "/dashboard/invoices/page": "app/dashboard/invoices/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/payments/page": "app/dashboard/payments/page.js",
+  "/icon/route": "app-edge-has-no-entrypoint",
+  "/page": "app/page.js",
+  "/pricing/page": "app/pricing/page.js"
+}

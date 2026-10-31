@@ -1,12 +1,12 @@
 
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createPlan(formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const productId = formData.get('product_id') as string
     const name = formData.get('name') as string
@@ -58,7 +58,7 @@ export async function createPlan(formData: FormData) {
 }
 
 export async function updatePlan(id: string, formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const name = formData.get('name') as string
     const amount = Number(formData.get('amount'))
@@ -103,7 +103,7 @@ export async function updatePlan(id: string, formData: FormData) {
 }
 
 export async function deletePlan(id: string) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const { error } = await supabase.from('plans').delete().eq('id', id)
 

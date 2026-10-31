@@ -1,10 +1,10 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 
 export async function createQuotationTemplate(formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const name = formData.get('name') as string
     const description = formData.get('description') as string
     const validity_days = Number(formData.get('validity_days') || 15)
@@ -20,7 +20,7 @@ export async function createQuotationTemplate(formData: FormData) {
 }
 
 export async function getQuotationTemplates() {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { data } = await supabase
         .from('quotation_templates')
         .select(`
@@ -35,7 +35,7 @@ export async function getQuotationTemplates() {
 }
 
 export async function addTemplateLine(templateId: string, productId: string, quantity: number) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { error } = await supabase.from('quotation_template_lines').insert({
         template_id: templateId,
         product_id: productId,

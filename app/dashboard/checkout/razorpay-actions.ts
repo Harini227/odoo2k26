@@ -137,9 +137,11 @@ export async function verifyPayment(
 
     // Create Payment Record
     if (sub) {
+        const planData = sub.plans as any
+        const rawAmount = Array.isArray(planData) ? planData[0]?.amount : planData?.amount
         await supabase.from('payments').insert({
             customer_id: sub.customer_id,
-            amount: (Array.isArray(sub.plans) ? sub.plans[0]?.amount : sub.plans?.amount) || 0,
+            amount: Number(rawAmount || 0),
             payment_date: new Date().toISOString(),
             payment_method: 'razorpay',
             transaction_id: razorpayPaymentId,

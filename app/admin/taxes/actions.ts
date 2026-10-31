@@ -1,19 +1,19 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 
 export async function createTax(formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const name = formData.get('name') as string
     const rate = Number(formData.get('rate'))
     const active = formData.get('active') === 'on'
 
-    // Map 'rate' from form to 'percentage' column as well to fix not-null constraint error
+    // Map 'rate' from form to 'percentage' column as well to satisfy DB constraints
     const { error } = await supabase.from('taxes').insert({
         name,
         rate,
-        percentage: rate, // Add this line to satisfy the DB constraint
+        percentage: rate,
         active
     })
     if (error) return { error: error.message }
@@ -22,7 +22,7 @@ export async function createTax(formData: FormData) {
 }
 
 export async function getTaxes() {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { data, error } = await supabase.from('taxes').select('*').order('created_at', { ascending: false })
     if (error) {
         console.error('Error fetching taxes:', error)
@@ -32,7 +32,7 @@ export async function getTaxes() {
 }
 
 export async function toggleTaxStatus(id: string, active: boolean) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     await supabase.from('taxes').update({ active }).eq('id', id)
     revalidatePath('/admin/taxes')
 }

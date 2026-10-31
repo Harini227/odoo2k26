@@ -1,12 +1,12 @@
 
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createCustomer(formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const name = formData.get('name') as string
     const email = formData.get('email') as string
@@ -39,7 +39,6 @@ export async function createCustomer(formData: FormData) {
 
     if (error) {
         console.error('Create customer error:', error)
-        // return { error: 'Could not create customer' } // Ideally handle duplicates
         return redirect('/admin/customers?error=Could not create customer (email exists?)')
     }
 
@@ -48,7 +47,7 @@ export async function createCustomer(formData: FormData) {
 }
 
 export async function updateCustomer(id: string, formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const name = formData.get('name') as string
     const email = formData.get('email') as string
@@ -84,7 +83,7 @@ export async function updateCustomer(id: string, formData: FormData) {
 }
 
 export async function deleteCustomer(id: string) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { error } = await supabase.from('customers').delete().eq('id', id)
 
     if (error) {

@@ -6,7 +6,7 @@ import Stripe from 'stripe'
 import { revalidatePath } from "next/cache"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_KEY', {
-    apiVersion: '2025-01-27.acacia', // Or latest
+    apiVersion: '2025-01-27.acacia' as any,
 })
 
 export async function createStripeSession(planId: string) {
@@ -81,12 +81,9 @@ export async function createStripeSession(planId: string) {
     origin = origin.includes('http') ? origin : `https://${origin}`
     origin = origin.endsWith('/') ? origin.slice(0, -1) : origin
 
-    // BYPASS STRIPE FOR TESTING
-    // If you want to simulate a successful payment without going to Stripe
-    const BYPASS_STRIPE = true
-
-    if (BYPASS_STRIPE) {
-        console.log("Bypassing Stripe for testing...")
+    // Check for explicit test/bypass flag via environment variable if desired, otherwise proceed with live Stripe checkout
+    if (process.env.NEXT_PUBLIC_STRIPE_BYPASS === 'true') {
+        console.log("Stripe bypass enabled via environment...")
         return {
             url: `${origin}/dashboard/checkout/success?session_id=BYPASS_STRIPE_TEST&subscription_id=${subscription.id}`
         }

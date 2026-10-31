@@ -1,10 +1,10 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 
 export async function getUsers() {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { data: users, error } = await supabase.from('profiles').select('*')
     if (error) {
         console.error('Error fetching users:', error)
@@ -14,7 +14,7 @@ export async function getUsers() {
 }
 
 export async function updateUserRole(userId: string, role: 'admin' | 'internal' | 'customer') {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { error } = await supabase.from('profiles').update({ role }).eq('id', userId)
     if (error) {
         console.error('Error updating role:', error)
@@ -25,8 +25,7 @@ export async function updateUserRole(userId: string, role: 'admin' | 'internal' 
 }
 
 export async function createInternalUser(email: string, fullName: string, role: 'admin' | 'internal') {
-    const supabase = await createClient()
-
+    await assertAdmin()
     // In a real app, you would use supabase.auth.admin.createUser
     // For this demo/setup, we will assume the user manually signs up or we insert into profiles
     // But profiles is linked to auth.users, so we'll just handle the role update for now
@@ -35,7 +34,7 @@ export async function createInternalUser(email: string, fullName: string, role: 
 }
 
 export async function promoteByEmail(email: string, role: 'admin' | 'internal') {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
     const { data: profile, error: findError } = await supabase.from('profiles').select('id').eq('email', email).single()
     if (findError || !profile) return { error: 'No user found with this email. They must sign up first.' }
 

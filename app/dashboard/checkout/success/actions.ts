@@ -7,7 +7,7 @@ import Stripe from 'stripe'
 import { sendInvoiceEmail } from "@/lib/email"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_KEY', {
-    apiVersion: '2025-01-27.acacia',
+    apiVersion: '2025-01-27.acacia' as any,
 })
 
 export async function handleStripeSuccess(checkoutSessionId: string, subscriptionId: string) {
@@ -80,6 +80,15 @@ export async function handleStripeSuccess(checkoutSessionId: string, subscriptio
 
             if (invError) {
                 console.error("Failed to generate invoice", invError)
+            } else if (newInvoice) {
+                // Snapshot into public.invoice_lines
+                await adminDb.from('invoice_lines').insert({
+                    invoice_id: newInvoice.id,
+                    description: planName,
+                    quantity: 1,
+                    unit_price: amount,
+                    amount: amount
+                })
             }
 
             // 3. Create Payment
@@ -163,6 +172,17 @@ export async function handleStripeSuccess(checkoutSessionId: string, subscriptio
                     })
                     .select()
                     .single()
+
+                // Snapshot into public.invoice_lines
+                if (newInvoice) {
+                    await supabase.from('invoice_lines').insert({
+                        invoice_id: newInvoice.id,
+                        description: planName,
+                        quantity: quantity,
+                        unit_price: amount / (quantity || 1),
+                        amount: amount
+                    })
+                }
 
                 // Create Payment
                 const { data: existingPayment } = await supabase.from('payments').select('id').eq('transaction_id', session.payment_intent as string).maybeSingle()

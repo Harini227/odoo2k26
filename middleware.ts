@@ -48,11 +48,11 @@ export async function middleware(request: NextRequest) {
             .eq('id', user.id)
             .single()
 
-        if (profile?.role !== 'admin') {
-            // Not an admin, redirect to dashboard
+        if (profile?.role !== 'admin' && profile?.role !== 'internal') {
+            // Not an admin or internal user, redirect to dashboard
             const url = request.nextUrl.clone()
             url.pathname = '/dashboard'
-            url.searchParams.set('error', 'Access denied. Admin privileges required.')
+            url.searchParams.set('error', 'Access denied. Administrative privileges required.')
             return NextResponse.redirect(url)
         }
     }

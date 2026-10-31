@@ -1,11 +1,11 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 
 export async function getSettings() {
     try {
-        const supabase = await createClient()
+        const { supabase } = await assertAdmin()
         const { data, error } = await supabase.from('settings').select('*')
 
         if (error) {
@@ -27,7 +27,7 @@ export async function getSettings() {
 
 export async function updateSettings(formData: FormData) {
     try {
-        const supabase = await createClient()
+        const { supabase } = await assertAdmin()
 
         const settingsToUpdate = [
             'company_name',

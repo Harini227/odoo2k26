@@ -1,12 +1,12 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { sendInvoiceEmail } from '@/lib/email'
 
 export async function createSubscription(formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const customerId = formData.get('customer_id') as string
     const status = formData.get('status') as string || 'draft'
@@ -65,11 +65,20 @@ export async function createSubscription(formData: FormData) {
 
     // 2. Create Subscription Lines
     let subtotalAmount = 0
+    const resolvedLines: { name: string; quantity: number; unit_price: number; amount: number }[] = []
+
     for (const line of lines) {
         const { data: plan } = await supabase.from('plans').select('name, amount, product_id').eq('id', line.planId).single()
         if (plan) {
             const lineAmount = Number(plan.amount) * line.quantity
             subtotalAmount += lineAmount
+            resolvedLines.push({
+                name: plan.name,
+                quantity: line.quantity,
+                unit_price: Number(plan.amount),
+                amount: lineAmount
+            })
+
             await supabase.from('subscription_lines').insert({
                 subscription_id: subscription.id,
                 product_id: plan.product_id,
@@ -102,6 +111,17 @@ export async function createSubscription(formData: FormData) {
         }).select().single()
 
         if (invoice) {
+            // Snapshot line items into public.invoice_lines
+            for (const item of resolvedLines) {
+                await supabase.from('invoice_lines').insert({
+                    invoice_id: invoice.id,
+                    description: item.name,
+                    quantity: item.quantity,
+                    unit_price: item.unit_price,
+                    amount: item.amount
+                })
+            }
+
             const { data: customer } = await supabase.from('customers').select('name, email').eq('id', customerId).single()
             if (customer?.email) {
                 await sendInvoiceEmail({
@@ -126,14 +146,13 @@ export async function createSubscription(formData: FormData) {
 }
 
 export async function updateSubscriptionStatus(id: string, newStatus: string) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     // 1. Update status
     const { error: updateError } = await supabase.from('subscriptions').update({ status: newStatus }).eq('id', id)
 
     if (updateError) {
         console.error('Error updating subscription status:', updateError)
-        // We might want to throw or return an error state here, but for now we log and return
         return
     }
 
@@ -144,17 +163,35 @@ export async function updateSubscriptionStatus(id: string, newStatus: string) {
         if (subscription) {
             // Calculate subtotal
             let subtotalAmount = 0
+            const lineItemsToSnapshot: { description: string; quantity: number; unit_price: number; amount: number }[] = []
 
             // Try to fetch lines
             const { data: lines } = await supabase.from('subscription_lines').select('*').eq('subscription_id', id)
 
             if (lines && lines.length > 0) {
-                subtotalAmount = lines.reduce((acc, line) => acc + (Number(line.unit_price) * Number(line.quantity)), 0)
+                for (const line of lines) {
+                    const lineTotal = Number(line.unit_price) * Number(line.quantity)
+                    subtotalAmount += lineTotal
+                    lineItemsToSnapshot.push({
+                        description: line.name || 'Subscription Line',
+                        quantity: Number(line.quantity),
+                        unit_price: Number(line.unit_price),
+                        amount: lineTotal
+                    })
+                }
             } else {
                 // Fallback for subscriptions without lines (legacy or simple)
-                const { data: plan } = await supabase.from('plans').select('amount').eq('id', subscription.plan_id).single()
+                const { data: plan } = await supabase.from('plans').select('name, amount').eq('id', subscription.plan_id).single()
                 if (plan) {
-                    subtotalAmount = Number(plan.amount) * (subscription.quantity || 1) // created subscription might not have quantity logic fully set if strictly lines, but robust fallback
+                    const qty = subscription.quantity || 1
+                    const lineTotal = Number(plan.amount) * qty
+                    subtotalAmount = lineTotal
+                    lineItemsToSnapshot.push({
+                        description: plan.name || 'Plan Subscription',
+                        quantity: qty,
+                        unit_price: Number(plan.amount),
+                        amount: lineTotal
+                    })
                 }
             }
 
@@ -182,6 +219,17 @@ export async function updateSubscriptionStatus(id: string, newStatus: string) {
             }).select().single()
 
             if (invoice) {
+                // Snapshot into public.invoice_lines
+                for (const item of lineItemsToSnapshot) {
+                    await supabase.from('invoice_lines').insert({
+                        invoice_id: invoice.id,
+                        description: item.description,
+                        quantity: item.quantity,
+                        unit_price: item.unit_price,
+                        amount: item.amount
+                    })
+                }
+
                 // Send Email
                 const { data: customer } = await supabase.from('customers').select('name, email').eq('id', subscription.customer_id).single()
                 if (customer?.email) {

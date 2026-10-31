@@ -1,12 +1,12 @@
 
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { assertAdmin } from '@/lib/auth-guard'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createProduct(formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const name = formData.get('name') as string
     const description = formData.get('description') as string
@@ -30,19 +30,21 @@ export async function createProduct(formData: FormData) {
         cost_price: costPrice,
     }).select().single()
 
-    if (error) {
+    if (error || !product) {
         console.error('Create product error:', error)
         return redirect('/admin/products/new?error=Could not create product')
     }
 
-    // Handle Attributes
+    // Handle Attributes linked to this product
     const attrName = formData.get('attribute_name') as string
     const attrValues = formData.get('attribute_values') as string
     const extraPrice = Number(formData.get('extra_price') || 0)
 
     if (attrName && attrValues) {
+        // Include product_id foreign key to properly associate variant attributes with product
         const { data: attr } = await supabase.from('product_attributes').insert({
-            name: attrName
+            name: attrName,
+            product_id: product.id
         }).select().single()
 
         if (attr) {
@@ -62,7 +64,7 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const name = formData.get('name') as string
     const description = formData.get('description') as string
@@ -93,7 +95,7 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
-    const supabase = await createClient()
+    const { supabase } = await assertAdmin()
 
     const { error } = await supabase.from('products').delete().eq('id', id)
 
@@ -102,7 +104,7 @@ export async function deleteProduct(id: string) {
         if (error.code === '23503') return { error: 'Product used in plans/subscriptions' }
         return { error: 'Could not delete product' }
     }
-    return { success: true }
 
     revalidatePath('/admin/products')
+    return { success: true }
 }
