@@ -60,8 +60,8 @@ export async function sendInvoiceEmail(data: InvoiceEmailData) {
 <body>
   <div class="container">
     <div class="header">
-      <h1>⚡ SubCheck</h1>
-      <p>Subscription Management System</p>
+      <h1 style="color: #4f46e5; margin: 0;">Subscale</h1>
+      <p style="color: #64748b; font-size: 13px; margin: 4px 0 0 0;">Enterprise Revenue Infrastructure</p>
     </div>
     
     <div class="content">
@@ -99,20 +99,20 @@ export async function sendInvoiceEmail(data: InvoiceEmailData) {
       </div>
       
       <center>
-        <a href="${invoiceUrl}" class="button">View Invoice</a>
+        <a href="${invoiceUrl}" class="button" style="background: #4f46e5; border-radius: 8px; font-weight: 600;">View Invoice</a>
       </center>
       
       <p style="margin-top: 30px; color: #666; font-size: 14px;">
         Please ensure payment is made by the due date to avoid any service interruption.
       </p>
       
-      <div style="margin-top: 40px; padding: 15px; background: #f0f0f0; border-left: 4px solid #4CAF50; font-size: 13px; color: #555;">
+      <div style="margin-top: 40px; padding: 15px; background: #f8fafc; border-left: 4px solid #4f46e5; font-size: 13px; color: #555; border-radius: 4px;">
         <strong>Note:</strong> This is a computer-generated invoice and does not require any physical signature.
       </div>
     </div>
     
     <div class="footer">
-      <p>This is an automated email from SubCheck Subscription Manager.</p>
+      <p>This is an automated email from Subscale Subscription Manager.</p>
       <p>If you have any questions, please contact us at admin@odoo-manager.com</p>
     </div>
   </div>
@@ -140,13 +140,13 @@ Please ensure payment is made by the due date to avoid any service interruption.
 NOTE: This is a computer-generated invoice and does not require any physical signature.
 ---
 
-This is an automated email from SubCheck Subscription Manager.
+This is an automated email from Subscale Subscription Manager.
 If you have any questions, please contact us at admin@odoo-manager.com
   `
 
   try {
     const info = await transporter.sendMail({
-      from: `"SubCheck" <${process.env.SMTP_USER}>`,
+      from: `"Subscale" <${process.env.SMTP_USER}>`,
       to: customerEmail,
       subject: `Invoice #${invoiceNumber} - Amount Due: ₹${total.toFixed(2)}`,
       text: textContent,

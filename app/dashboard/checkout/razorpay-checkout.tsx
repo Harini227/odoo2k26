@@ -94,7 +94,7 @@ export function RazorpayCheckout({ planId, planAmount, userEmail, userName }: Ra
                 key: data.keyId,
                 amount: data.amount,
                 currency: data.currency,
-                name: "SubCheck",
+                name: "Subscale",
                 description: "Subscription Payment",
                 order_id: data.orderId,
                 handler: async function (response: any) {

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowLeft, CheckCircle2, Clock, XCircle } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Clock, XCircle, Sparkles } from "lucide-react"
 
 export default async function SubscriptionDetailsPage({
     params
@@ -128,8 +128,9 @@ export default async function SubscriptionDetailsPage({
                                             <p className="text-sm font-medium">Enjoying the trial? Upgrade now!</p>
                                         </div>
                                         <Link href="/pricing?upgrade=true">
-                                            <Button className="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0">
-                                                Upgrade to Pro Plan 🚀
+                                            <Button className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white border-0 shadow-sm shadow-indigo-500/20">
+                                                <span>Upgrade to Pro Plan</span>
+                                                <Sparkles className="h-4 w-4 ml-1.5" />
                                             </Button>
                                         </Link>
                                     </div>

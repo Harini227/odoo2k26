@@ -1,0 +1,11 @@
+{
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/auth/verify-email/page": "app/auth/verify-email/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/subscriptions/page": "app/dashboard/subscriptions/page.js",
+  "/icon/route": "app-edge-has-no-entrypoint",
+  "/page": "app/page.js",
+  "/pricing/page": "app/pricing/page.js"
+}

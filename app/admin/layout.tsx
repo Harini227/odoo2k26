@@ -22,13 +22,13 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+        <div className="grid min-h-screen w-full md:grid-cols-[230px_1fr] lg:grid-cols-[280px_1fr] bg-slate-50/70 dark:bg-slate-950">
             <Sidebar role="admin" />
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
                 <AdminMobileHeader>
                     <Sidebar role="admin" className="block w-full border-none" />
                 </AdminMobileHeader>
-                <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+                <main className="flex flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-7xl w-full mx-auto">
                     {children}
                 </main>
             </div>

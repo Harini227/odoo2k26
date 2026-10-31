@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SubCheck - Subscription Manager",
-  description: "Enterprise Subscription Management Hackathon Project",
+  title: "Subscale - Enterprise Subscription Management & Revenue Infrastructure",
+  description: "Next-gen recurring billing, contract lifecycle, automated invoicing, and settlement engine.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextTopLoader color="#7c3aed" height={4} showSpinner={true} />
+        <NextTopLoader color="#10B981" height={3} showSpinner={false} />
         {children}
         <Toaster position="top-center" richColors />
       </body>

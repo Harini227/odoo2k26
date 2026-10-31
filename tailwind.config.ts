@@ -53,8 +53,33 @@ const config = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                brand: {
+                    indigo: "#1E293B",
+                    emerald: "#10B981",
+                    mint: "#34D399",
+                    slate: "#0F172A",
+                    surface: "#F8FAFC",
+                },
+                status: {
+                    active: {
+                        bg: "#ECFDF5",
+                        text: "#047857",
+                        border: "#A7F3D0",
+                    },
+                    pending: {
+                        bg: "#FFFBEB",
+                        text: "#B45309",
+                        border: "#FDE68A",
+                    },
+                    error: {
+                        bg: "#FFF1F2",
+                        text: "#BE123C",
+                        border: "#FECDD3",
+                    },
+                },
             },
             borderRadius: {
+                xl: "calc(var(--radius) + 4px)",
                 lg: "var(--radius)",
                 md: "calc(var(--radius) - 2px)",
                 sm: "calc(var(--radius) - 4px)",

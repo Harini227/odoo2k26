@@ -41,7 +41,7 @@ export default function SettingsForm({ settings }: { settings: any }) {
                         <Input
                             id="company_name"
                             name="company_name"
-                            defaultValue={settings.company_name || 'SubCheck Inc.'}
+                            defaultValue={settings.company_name || 'Subscale Inc.'}
                         />
                     </div>
                     <div className="grid gap-2">

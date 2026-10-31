@@ -50,43 +50,61 @@ export default async function ReportsPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight">Financial & Ops Reports</h1>
+            <div className="pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Financial & Operations Intelligence</h1>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Ledger audit, revenue realization, and cohort retention telemetry.</p>
+            </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className="bg-emerald-50 border-emerald-100">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-emerald-50/70 border-emerald-200/80 dark:bg-emerald-950/30 dark:border-emerald-800/60 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-emerald-900">Settled Revenue</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-emerald-600" />
+                        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Settled Revenue</CardTitle>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300">
+                            <TrendingUp className="h-4 w-4" />
+                        </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-emerald-900">{formatCurrency(totalRevenue)}</div>
+                        <div className="text-2xl font-bold text-emerald-950 dark:text-emerald-100">{formatCurrency(totalRevenue)}</div>
+                        <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1 font-medium">Realized to account</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-amber-50 border-amber-100">
+
+                <Card className="bg-amber-50/70 border-amber-200/80 dark:bg-amber-950/30 dark:border-amber-800/60 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-amber-900">Outstanding Invoices</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-amber-600" />
+                        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-300">Outstanding Invoices</CardTitle>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300">
+                            <AlertCircle className="h-4 w-4" />
+                        </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-amber-900">{formatCurrency(pendingRevenue)}</div>
+                        <div className="text-2xl font-bold text-amber-950 dark:text-amber-100">{formatCurrency(pendingRevenue)}</div>
+                        <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 font-medium">In dispatch cycle</p>
                     </CardContent>
                 </Card>
-                <Card>
+
+                <Card className="border-slate-200/80 dark:border-slate-800 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Active Subs</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Subs</CardTitle>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                            <Users className="h-4 w-4" />
+                        </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{activeSubs}</div>
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{activeSubs}</div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Live contracts</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-rose-50 border-rose-100">
+
+                <Card className="bg-rose-50/70 border-rose-200/80 dark:bg-rose-950/30 dark:border-rose-800/60 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-rose-900">Overdue Invoices</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-rose-600" />
+                        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-300">Overdue Invoices</CardTitle>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300">
+                            <AlertCircle className="h-4 w-4" />
+                        </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-rose-900">{overdueInvoices}</div>
+                        <div className="text-2xl font-bold text-rose-950 dark:text-rose-100">{overdueInvoices}</div>
+                        <p className="text-xs text-rose-700 dark:text-rose-400 mt-1 font-medium">Action required</p>
                     </CardContent>
                 </Card>
             </div>

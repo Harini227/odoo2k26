@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Loader2, CheckCircle2 } from "lucide-react"
+import { Loader2, CheckCircle2, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { handleStripeSuccess } from "./actions"
 
@@ -56,10 +56,10 @@ export default function CheckoutSuccessPage() {
 
                 {status === 'success' && (
                     <>
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                            <CheckCircle2 className="h-10 w-10 text-green-600" />
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                            <CheckCircle2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
                         </div>
-                        <h1 className="text-2xl font-bold tracking-tight text-green-700">Payment Successful!</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-emerald-700 dark:text-emerald-400">Payment Successful!</h1>
                         <p className="text-muted-foreground">Your subscription is now active.</p>
                         <div className="pt-4">
                             <Button className="w-full" size="lg" onClick={() => router.push('/dashboard')}>
@@ -71,10 +71,10 @@ export default function CheckoutSuccessPage() {
 
                 {status === 'error' && (
                     <>
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-                            <span className="text-3xl">❌</span>
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-500/10 border border-rose-500/20">
+                            <XCircle className="h-8 w-8 text-rose-600 dark:text-rose-400" />
                         </div>
-                        <h1 className="text-2xl font-bold tracking-tight text-red-600">Verification Failed</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-rose-600 dark:text-rose-400">Verification Failed</h1>
                         <p className="text-muted-foreground">{message}</p>
                         <div className="pt-4 space-y-2">
                             <Button className="w-full" variant="outline" onClick={() => router.back()}>
